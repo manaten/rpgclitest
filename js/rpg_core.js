@@ -1744,7 +1744,7 @@ Graphics._createCanvas = function() {
     this._canvas = document.createElement('canvas');
     this._canvas.id = 'GameCanvas';
     this._updateCanvas();
-    document.body.appendChild(this._canvas);
+    // document.body.appendChild(this._canvas);
 };
 
 /**
@@ -1755,7 +1755,7 @@ Graphics._createCanvas = function() {
 Graphics._updateCanvas = function() {
     this._canvas.width = this._width;
     this._canvas.height = this._height;
-    this._canvas.style.zIndex = 1;
+    // this._canvas.style.zIndex = 1;
     this._centerElement(this._canvas);
 };
 
@@ -1962,14 +1962,14 @@ Graphics._createFontLoader = function(name) {
 Graphics._centerElement = function(element) {
     var width = element.width * this._realScale;
     var height = element.height * this._realScale;
-    element.style.position = 'absolute';
-    element.style.margin = 'auto';
-    element.style.top = 0;
-    element.style.left = 0;
-    element.style.right = 0;
-    element.style.bottom = 0;
-    element.style.width = width + 'px';
-    element.style.height = height + 'px';
+    // element.style.position = 'absolute';
+    // element.style.margin = 'auto';
+    // element.style.top = 0;
+    // element.style.left = 0;
+    // element.style.right = 0;
+    // element.style.bottom = 0;
+    // element.style.width = width + 'px';
+    // element.style.height = height + 'px';
 };
 
 /**
@@ -2005,9 +2005,9 @@ Graphics._disableContextMenu = function() {
  */
 Graphics._applyCanvasFilter = function() {
     if (this._canvas) {
-        this._canvas.style.opacity = 0.5;
-        this._canvas.style.filter = 'blur(8px)';
-        this._canvas.style.webkitFilter = 'blur(8px)';
+        // this._canvas.style.opacity = 0.5;
+        // this._canvas.style.filter = 'blur(8px)';
+        // this._canvas.style.webkitFilter = 'blur(8px)';
     }
 };
 
@@ -2046,8 +2046,8 @@ Graphics._onVideoEnd = function() {
  * @private
  */
 Graphics._updateVisibility = function(videoVisible) {
-    this._video.style.opacity = videoVisible ? 1 : 0;
-    this._canvas.style.opacity = videoVisible ? 0 : 1;
+    // this._video.style.opacity = videoVisible ? 1 : 0;
+    // this._canvas.style.opacity = videoVisible ? 0 : 1;
 };
 
 /**

@@ -1468,13 +1468,9 @@ SceneManager._boxWidth          = 816;
 SceneManager._boxHeight         = 624;
 
 SceneManager.run = function(sceneClass) {
-    try {
-        this.initialize();
-        this.goto(sceneClass);
-        this.requestUpdate();
-    } catch (e) {
-        this.catchException(e);
-    }
+    this.initialize();
+    this.goto(sceneClass);
+    this.requestUpdate();
 };
 
 SceneManager.initialize = function() {
