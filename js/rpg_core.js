@@ -2,6 +2,8 @@
 // rpg_core.js
 //=============================================================================
 
+var PIXI = exports.PIXI;
+
 //-----------------------------------------------------------------------------
 /**
  * This is not a class, but contains some methods that will be added to the
