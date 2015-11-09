@@ -30,7 +30,7 @@ Scene_Base.prototype.isActive = function() {
 };
 
 Scene_Base.prototype.isReady = function() {
-    return ImageManager.isReady();
+    return true;
 };
 
 Scene_Base.prototype.start = function() {
@@ -180,7 +180,7 @@ Scene_Boot.prototype.loadSystemImages = function() {
 
 Scene_Boot.prototype.isReady = function() {
     if (Scene_Base.prototype.isReady.call(this)) {
-        return DataManager.isDatabaseLoaded() && this.isGameFontLoaded();
+        return DataManager.isDatabaseLoaded();
     } else {
         return false;
     }
@@ -209,7 +209,7 @@ Scene_Boot.prototype.start = function() {
     } else {
         this.checkPlayerLocation();
         DataManager.setupNewGame();
-        SceneManager.goto(Scene_Title);
+        SceneManager.goto(Scene_Map);
         Window_TitleCommand.initCommandPosition();
     }
     this.updateDocumentTitle();

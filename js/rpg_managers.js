@@ -76,27 +76,14 @@ DataManager.loadDatabase = function() {
 };
 
 DataManager.loadDataFile = function(name, src) {
-    var xhr = new XMLHttpRequest();
-    var url = 'data/' + src;
-    xhr.open('GET', url);
-    xhr.overrideMimeType('application/json');
-    xhr.onload = function() {
-        if (xhr.status < 400) {
-            window[name] = JSON.parse(xhr.responseText);
-            DataManager.onLoad(window[name]);
-        }
-    };
-    xhr.onerror = function() {
-        DataManager._errorUrl = DataManager._errorUrl || url;
-    };
-    window[name] = null;
-    xhr.send();
+    global[name] = require('../data/' + src);
+    DataManager.onLoad(global[name]);
 };
 
 DataManager.isDatabaseLoaded = function() {
     this.checkError();
     for (var i = 0; i < this._databaseFiles.length; i++) {
-        if (!window[this._databaseFiles[i].name]) {
+        if (!global[this._databaseFiles[i].name]) {
             return false;
         }
     }
@@ -1526,7 +1513,7 @@ SceneManager.checkFileAccess = function() {
 };
 
 SceneManager.initAudio = function() {
-    var noAudio = Utils.isOptionValid('noaudio');
+    var noAudio = true;
     if (!WebAudio.initialize(noAudio) && !noAudio) {
         throw new Error('Your browser does not support Web Audio API.');
     }
@@ -1609,6 +1596,7 @@ SceneManager.onKeyDown = function(event) {
 };
 
 SceneManager.catchException = function(e) {
+    console.log(e);
     if (e instanceof Error) {
         Graphics.printError(e.name, e.message);
         console.error(e.stack);

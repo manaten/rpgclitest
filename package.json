@@ -1,5 +1,5 @@
 {
-  "name": "rpgcli",
+  "name": "rpg-cli",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -11,10 +11,12 @@
     "url": "git@bitbucket.org:manaten/rpgcli.git"
   },
   "author": "manaten",
-  "license": "",
+  "license": "manaten",
   "dependencies": {
+    "blessed": "^0.1.81",
     "canvas": "^1.3.0",
     "jsdom": "^7.0.2",
-    "localStorage": "^1.0.3"
+    "localStorage": "^1.0.3",
+    "raf": "^3.1.0"
   }
 }

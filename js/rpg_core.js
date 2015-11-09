@@ -3,6 +3,7 @@
 //=============================================================================
 
 var PIXI = exports.PIXI;
+var FPSMeter = window.FPSMeter;
 
 //-----------------------------------------------------------------------------
 /**
@@ -185,7 +186,8 @@ Utils.isOptionValid = function(name) {
  * @return {Boolean} True if the platform is NW.js
  */
 Utils.isNwjs = function() {
-    return typeof require === 'function' && typeof process === 'object';
+    return false;
+    // return typeof require === 'function' && typeof process === 'object';
 };
 
 /**
@@ -233,17 +235,7 @@ Utils.isAndroidChrome = function() {
  * @return {Boolean} True if the browser can read files in the game folder
  */
 Utils.canReadGameFiles = function() {
-    var scripts = document.getElementsByTagName('script');
-    var lastScript = scripts[scripts.length - 1];
-    var xhr = new XMLHttpRequest();
-    try {
-        xhr.open('GET', lastScript.src);
-        xhr.overrideMimeType('text/javascript');
-        xhr.send();
-        return true;
-    } catch (e) {
-        return false;
-    }
+    return true;
 };
 
 /**
@@ -1320,7 +1312,7 @@ Graphics.startLoading = function() {
 Graphics.updateLoading = function() {
     this._loadingCount++;
     this._paintUpperCanvas();
-    this._upperCanvas.style.opacity = 1;
+    // this._upperCanvas.style.opacity = 1;
 };
 
 /**
@@ -1331,7 +1323,7 @@ Graphics.updateLoading = function() {
  */
 Graphics.endLoading = function() {
     this._clearUpperCanvas();
-    this._upperCanvas.style.opacity = 0;
+    // this._upperCanvas.style.opacity = 0;
 };
 
 /**
@@ -1793,7 +1785,7 @@ Graphics._createUpperCanvas = function() {
     this._upperCanvas = document.createElement('canvas');
     this._upperCanvas.id = 'UpperCanvas';
     this._updateUpperCanvas();
-    document.body.appendChild(this._upperCanvas);
+    // document.body.appendChild(this._upperCanvas);
 };
 
 /**
@@ -1804,7 +1796,7 @@ Graphics._createUpperCanvas = function() {
 Graphics._updateUpperCanvas = function() {
     this._upperCanvas.width = this._width;
     this._upperCanvas.height = this._height;
-    this._upperCanvas.style.zIndex = 3;
+    // this._upperCanvas.style.zIndex = 3;
     this._centerElement(this._upperCanvas);
 };
 
