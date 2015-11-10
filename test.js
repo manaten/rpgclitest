@@ -2,13 +2,14 @@ var blessed = require('blessed');
 
 // Create a screen object.
 var screen = blessed.screen({
-  smartCSR: true
+  smartCSR: true,
+  fullUnicode: true
 });
 
 screen.title = 'my window title';
 
 var map = blessed.box({
-  width: 17,
+  width: 34,
   height: 13,
   top: 'center',
   left: 'center'
@@ -19,10 +20,10 @@ for (var x = 0; x < 17; x++) {
     // Create a box perfectly centered horizontally and vertically.
     var text = blessed.text({
       top: y,
-      left: x,
-      width: 1,
+      left: x*2,
+      width: 2,
       height: 1,
-      content: '@',
+      content: '＠',
       tags: true,
       style: {
         fg: 'white',
