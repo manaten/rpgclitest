@@ -14,6 +14,7 @@ jsdom.env(
     global.Image = Canvas.Image
     global.localStorage = localStorage;
     global.requestAnimationFrame = raf;
+    global.alert = function(msg) {console.log(msg);};
 
     var createElementOriginal = document.createElement;
     document.createElement = function() {
