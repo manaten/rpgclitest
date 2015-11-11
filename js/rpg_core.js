@@ -1221,6 +1221,7 @@ Graphics.render = function(stage) {
         var startTime = Date.now();
         if (stage) {
             this._renderer.render(stage);
+            blessedScreen.render();
         }
         var endTime = Date.now();
         var elapsed = endTime - startTime;
@@ -3880,9 +3881,9 @@ Tilemap.prototype.update = function() {
         if (child.update) {
             var tile = global.blessedTiles[Math.floor(child.x/48) + Math.floor(child.y/48) * 17];
             if (tile) {
-                tile.setContent('a');
+                tile.setContent('＠');
             }
-            // child.update();
+            child.update();
         }
     });
 
@@ -4154,11 +4155,21 @@ Tilemap.prototype._writeLastTiles = function(i, x, y, tiles) {
  */
 Tilemap.prototype._drawTile = function(bitmap, tileId, dx, dy) {
     if (Tilemap.isVisibleTile(tileId)) {
-        if (Tilemap.isAutotile(tileId)) {
-            this._drawAutotile(bitmap, tileId, dx, dy);
-        } else {
-            this._drawNormalTile(bitmap, tileId, dx, dy);
+        var tile = global.blessedTiles[Math.floor(dx/48) + Math.floor(dy/48) * 17];
+        if (tile) {
+            var chars = {
+                11: 'a',
+                26: 'b',
+                27: 'c',
+                6: 'd'
+            }
+            tile.setContent(chars[Math.floor(tileId/256)]);
         }
+        // if (Tilemap.isAutotile(tileId)) {
+        //     this._drawAutotile(bitmap, tileId, dx, dy);
+        // } else {
+        //     this._drawNormalTile(bitmap, tileId, dx, dy);
+        // }
     }
 };
 
