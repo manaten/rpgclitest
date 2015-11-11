@@ -2233,30 +2233,30 @@ Input.keyRepeatInterval = 6;
  * @type Object
  */
 Input.keyMapper = {
-    9: 'tab',       // tab
-    13: 'ok',       // enter
-    16: 'shift',    // shift
-    17: 'control',  // control
-    18: 'control',  // alt
-    27: 'escape',   // escape
-    32: 'ok',       // space
-    33: 'pageup',   // pageup
-    34: 'pagedown', // pagedown
-    37: 'left',     // left arrow
-    38: 'up',       // up arrow
-    39: 'right',    // right arrow
-    40: 'down',     // down arrow
-    45: 'escape',   // insert
-    81: 'pageup',   // Q
-    87: 'pagedown', // W
-    88: 'escape',   // X
-    90: 'ok',       // Z
-    96: 'escape',   // numpad 0
-    98: 'down',     // numpad 2
-    100: 'left',    // numpad 4
-    102: 'right',   // numpad 6
-    104: 'up',      // numpad 8
-    120: 'debug'    // F9
+    9         : 'tab',       // tab
+    'enter'   : 'ok',       // enter
+    16        : 'shift',    // shift
+    17        : 'control',  // control
+    18        : 'control',  // alt
+    'escape'  : 'escape',   // escape
+    'space'   : 'ok',       // space
+    'pageup'  : 'pageup',   // pageup
+    'pagedown': 'pagedown', // pagedown
+    'left'    : 'left',     // left arrow
+    'up'      : 'up',       // up arrow
+    'right'   : 'right',    // right arrow
+    'down'    : 'down',     // down arrow
+    45        : 'escape',   // insert
+    'q'       : 'pageup',   // Q
+    'w'       : 'pagedown', // W
+    'x'       : 'escape',   // X
+    'z'       : 'ok',       // Z
+    96        : 'escape',   // numpad 0
+    98        : 'down',     // numpad 2
+    100       : 'left',    // numpad 4
+    102       : 'right',   // numpad 6
+    104       : 'up',      // numpad 8
+    120       : 'debug'    // F9
 };
 
 /**
@@ -2317,6 +2317,8 @@ Input.update = function() {
             this._date = Date.now();
         }
         this._previousState[name] = this._currentState[name];
+        // keyUpが取れないため、しょうがない
+        this._currentState[name] = false;
     }
     this._updateDirection();
 };
@@ -2455,9 +2457,11 @@ Input._wrapNwjsAlert = function() {
  * @private
  */
 Input._setupEventHandlers = function() {
-    document.addEventListener('keydown', this._onKeyDown.bind(this));
-    document.addEventListener('keyup', this._onKeyUp.bind(this));
-    window.addEventListener('blur', this._onLostFocus.bind(this));
+    blessedScreen.key([
+        'z', 'x', 'w', 'q',
+        'left', 'up', 'right', 'down',
+        'enter', 'tab', 'escape', 'space'
+    ], this._onKeyDown.bind(this));
 };
 
 /**
@@ -2466,37 +2470,11 @@ Input._setupEventHandlers = function() {
  * @param {KeyboardEvent} event
  * @private
  */
-Input._onKeyDown = function(event) {
-    if (this._shouldPreventDefault(event.keyCode)) {
-        event.preventDefault();
-    }
-    if (event.keyCode === 144) {    // Numlock
-        this.clear();
-    }
-    var buttonName = this.keyMapper[event.keyCode];
+Input._onKeyDown = function(ch, key) {
+    var buttonName = this.keyMapper[key.name];
     if (buttonName) {
         this._currentState[buttonName] = true;
     }
-};
-
-/**
- * @static
- * @method _shouldPreventDefault
- * @param {Number} keyCode
- * @private
- */
-Input._shouldPreventDefault = function(keyCode) {
-    switch (keyCode) {
-    case 8:     // backspace
-    case 33:    // pageup
-    case 34:    // pagedown
-    case 37:    // left arrow
-    case 38:    // up arrow
-    case 39:    // right arrow
-    case 40:    // down arrow
-        return true;
-    }
-    return false;
 };
 
 /**
@@ -2506,13 +2484,7 @@ Input._shouldPreventDefault = function(keyCode) {
  * @private
  */
 Input._onKeyUp = function(event) {
-    var buttonName = this.keyMapper[event.keyCode];
-    if (buttonName) {
-        this._currentState[buttonName] = false;
-    }
-    if (event.keyCode === 0) {  // For QtWebEngine on OS X
-        this.clear();
-    }
+    // blessed(と言うかターミナル)でkeyUpとれねーじゃん！！！
 };
 
 /**
@@ -3906,9 +3878,15 @@ Tilemap.prototype.update = function() {
     this.animationCount++;
     this.children.forEach(function(child) {
         if (child.update) {
-            child.update();
+            var tile = global.blessedTiles[Math.floor(child.x/48) + Math.floor(child.y/48) * 17];
+            if (tile) {
+                tile.setContent('a');
+            }
+            // child.update();
         }
     });
+
+
 };
 
 /**
