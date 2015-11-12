@@ -2318,10 +2318,14 @@ Input.update = function() {
             this._date = Date.now();
         }
         this._previousState[name] = this._currentState[name];
-        // keyUpが取れないため、しょうがない
-        this._currentState[name] = false;
     }
     this._updateDirection();
+
+    for (var name in this._currentState) {
+        // keyUpが取れないため、しょうがない
+        // おしっぱにしてれば次のupdateDirectionのタイミングでtrueなので、問題なく動く
+        this._currentState[name] = false;
+    }
 };
 
 /**
@@ -3880,7 +3884,7 @@ Tilemap.prototype.update = function() {
     this.children.forEach(function(child) {
         if (child.update) {
             var tile = global.blessedTiles[Math.floor(child.x/48) + Math.floor(child.y/48) * 17];
-            if (tile) {
+            if (tile && child) {
                 tile.setContent('＠');
             }
             child.update();
@@ -4157,13 +4161,14 @@ Tilemap.prototype._drawTile = function(bitmap, tileId, dx, dy) {
     if (Tilemap.isVisibleTile(tileId)) {
         var tile = global.blessedTiles[Math.floor(dx/48) + Math.floor(dy/48) * 17];
         if (tile) {
-            var chars = {
-                11: 'a',
-                26: 'b',
-                27: 'c',
-                6: 'd'
-            }
-            tile.setContent(chars[Math.floor(tileId/256)]);
+            var char = {
+                11: '{green-fg}.{/green-fg}',
+                26: '{white-fg}＃{/white-fg}',
+                27: '{white-fg}＃{/white-fg}',
+                6 : '{white-fg}.{/white-fg}'
+            }[Math.floor(tileId / 256)];
+            tile.setContent(char);
+            // tile.setStyle(char.style);
         }
         // if (Tilemap.isAutotile(tileId)) {
         //     this._drawAutotile(bitmap, tileId, dx, dy);

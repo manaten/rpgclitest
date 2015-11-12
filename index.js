@@ -43,8 +43,7 @@ jsdom.env(
           content: '　',
           tags: true,
           style: {
-            fg: 'white',
-            bg: 'green'
+            fg: 'white'
           }
         });
         tiles[x + y * 17] = text;
