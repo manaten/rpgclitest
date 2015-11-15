@@ -2490,7 +2490,7 @@ Input._onKeyDown = function(ch, key) {
  * @private
  */
 Input._onKeyUp = function(event) {
-    // blessed(と言うかターミナル)でkeyUpとれねーじゃん！！！
+    // blessed(と言うかターミナル？)でkeyUpとれない！！！
 };
 
 /**
@@ -3722,7 +3722,13 @@ Tilemap.prototype.initialize = function() {
     this._layerHeight = 0;
     this._lastTiles = [];
 
-    this.blessedElement = null;
+    this.blessedElement = blessed.box({
+      width: Math.floor(this._width / this._tileWidth) * 2,
+      height: Math.floor(this._height / this._tileHeight),
+      top: 'center',
+      left: 'center'
+    });
+    blessedScreen.append(this.blessedElement);
 
     /**
      * The bitmaps used as a tileset.
@@ -3936,12 +3942,12 @@ Tilemap.prototype._createLayers = function() {
     this._layerWidth = layerWidth;
     this._layerHeight = layerHeight;
 
-    this.blessedElement && this.blessedElement.detach();
-    this.blessedElement = blessed.box({
+    this.tilesBlessedElement && this.tilesBlessedElement.detach();
+    this.tilesBlessedElement = blessed.box({
       width: tileCols * 2,
       height: tileRows,
-      top: 'center',
-      left: 'center'
+      top: -Math.floor(margin / this._tileWidth),
+      left: -Math.floor(margin / this._tileHeight)
     });
 
     this.blessedTiles = [];
@@ -3961,11 +3967,11 @@ Tilemap.prototype._createLayers = function() {
         });
         this.blessedTiles[x][y] = tile;
         tile.setIndex(0);
-        this.blessedElement.append(tile);
+        this.tilesBlessedElement.append(tile);
       }
     }
-    this.blessedElement.setIndex(0);
-    blessedScreen.append(this.blessedElement);
+    this.tilesBlessedElement.setIndex(0);
+    this.blessedElement.append(this.tilesBlessedElement);
 
     /*
      * Z coordinate:

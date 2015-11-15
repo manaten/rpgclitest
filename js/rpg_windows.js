@@ -4328,6 +4328,7 @@ Window_Message.prototype.startMessage = function() {
     this._textState = {};
     this._textState.index = 0;
     this._textState.text = this.convertEscapeCharacters($gameMessage.allText());
+    console.log( this._textState.text )
     this.newPage(this._textState);
     this.updatePlacement();
     this.updateBackground();
