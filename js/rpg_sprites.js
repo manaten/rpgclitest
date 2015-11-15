@@ -192,6 +192,18 @@ Sprite_Character.prototype.initialize = function(character) {
     Sprite_Base.prototype.initialize.call(this);
     this.initMembers();
     this.setCharacter(character);
+    this.blessedElement = blessed.text({
+      top: 0,
+      left: 0,
+      width: 2,
+      height: 1,
+      content: '',
+      tags: true,
+      style: {
+        fg: 'white'
+      }
+    });
+    this.blessedElement.setIndex(1000);
 };
 
 Sprite_Character.prototype.initMembers = function() {
@@ -241,6 +253,19 @@ Sprite_Character.prototype.updateBitmap = function() {
         this._tileId = this._character.tileId();
         this._characterName = this._character.characterName();
         this._characterIndex = this._character.characterIndex();
+
+        // console.log([this._tilesetId, this._tileId, this._characterName, this._characterIndex])
+        if (/^People/.test(this._characterName)) {
+            var color = {
+                0: 'yellow',
+                4: 'red',
+                5: 'blue'
+            }[this._characterIndex];
+            this.blessedElement.setContent('{' + color + '-fg}ｐ{/' + color + '-fg}');
+        }
+        if (/^Actor/.test(this._characterName))
+            this.blessedElement.setContent('＠');
+
         if (this._tileId > 0) {
             this.setTileBitmap();
         } else {
@@ -381,6 +406,14 @@ Sprite_Character.prototype.updatePosition = function() {
     this.x = this._character.screenX();
     this.y = this._character.screenY();
     this.z = this._character.screenZ();
+    this.blessedElement.top = Math.round(this.y / 48);
+    this.blessedElement.left = Math.round(this.x / 48) * 2;
+    // this.blessedElement.setIndex(this.z); // なんか表示されなくなるため一旦。
+    if (this.visible && this.alpha > 0 && this._characterName !== '') {
+        this.blessedElement.show();
+    } else {
+        this.blessedElement.hide();
+    }
 };
 
 Sprite_Character.prototype.updateAnimation = function() {
@@ -2322,6 +2355,7 @@ Spriteset_Map.prototype.createCharacters = function() {
     this._characterSprites.push(new Sprite_Character($gamePlayer));
     for (var i = 0; i < this._characterSprites.length; i++) {
         this._tilemap.addChild(this._characterSprites[i]);
+        this._tilemap.blessedElement.append(this._characterSprites[i].blessedElement)
     }
 };
 

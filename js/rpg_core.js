@@ -1220,7 +1220,8 @@ Graphics.render = function(stage) {
     if (this._skipCount === 0) {
         var startTime = Date.now();
         if (stage) {
-            this._renderer.render(stage);
+            // this._renderer.render(stage);
+
             blessedScreen.render();
         }
         var endTime = Date.now();
@@ -3171,6 +3172,7 @@ Sprite.prototype.initialize = function(bitmap) {
     this.opaque = false;
 
     this.bitmap = bitmap;
+    this.blessedElement = null;
 };
 
 // Number of the created objects.
@@ -3720,6 +3722,8 @@ Tilemap.prototype.initialize = function() {
     this._layerHeight = 0;
     this._lastTiles = [];
 
+    this.blessedElement = null;
+
     /**
      * The bitmaps used as a tileset.
      *
@@ -3881,12 +3885,9 @@ Tilemap.prototype.isReady = function() {
  */
 Tilemap.prototype.update = function() {
     this.animationCount++;
+    this.updateTransform();
     this.children.forEach(function(child) {
         if (child.update) {
-            var tile = global.blessedTiles[Math.floor(child.x/48) + Math.floor(child.y/48) * 17];
-            if (tile && child) {
-                tile.setContent('＠');
-            }
             child.update();
         }
     });
@@ -3934,6 +3935,37 @@ Tilemap.prototype._createLayers = function() {
     this._upperBitmap = new Bitmap(layerWidth, layerHeight);
     this._layerWidth = layerWidth;
     this._layerHeight = layerHeight;
+
+    this.blessedElement && this.blessedElement.detach();
+    this.blessedElement = blessed.box({
+      width: tileCols * 2,
+      height: tileRows,
+      top: 'center',
+      left: 'center'
+    });
+
+    this.blessedTiles = [];
+    for (var x = 0; x < tileCols; x++) {
+      this.blessedTiles[x] = [];
+      for (var y = 0; y < tileRows; y++) {
+        var tile = blessed.text({
+          top: y,
+          left: x*2,
+          width: 2,
+          height: 1,
+          content: '　',
+          tags: true,
+          style: {
+            fg: 'white'
+          }
+        });
+        this.blessedTiles[x][y] = tile;
+        tile.setIndex(0);
+        this.blessedElement.append(tile);
+      }
+    }
+    this.blessedElement.setIndex(0);
+    blessedScreen.append(this.blessedElement);
 
     /*
      * Z coordinate:
@@ -4027,10 +4059,13 @@ Tilemap.prototype._paintAllTiles = function(startX, startY) {
  */
 Tilemap.prototype._paintTiles = function(startX, startY, x, y) {
     var tableEdgeVirtualId = 10000;
+    // console.log([startX, startY, x, y])
     var mx = startX + x;
     var my = startY + y;
-    var dx = (mx * this._tileWidth).mod(this._layerWidth);
-    var dy = (my * this._tileHeight).mod(this._layerHeight);
+    // var dx = (mx * this._tileWidth).mod(this._layerWidth);
+    // var dy = (my * this._tileHeight).mod(this._layerHeight);
+    var dx = (x * this._tileWidth).mod(this._layerWidth);
+    var dy = (y * this._tileHeight).mod(this._layerHeight);
     var lx = dx / this._tileWidth;
     var ly = dy / this._tileHeight;
     var tileId0 = this._readMapData(mx, my, 0);
@@ -4159,16 +4194,18 @@ Tilemap.prototype._writeLastTiles = function(i, x, y, tiles) {
  */
 Tilemap.prototype._drawTile = function(bitmap, tileId, dx, dy) {
     if (Tilemap.isVisibleTile(tileId)) {
-        var tile = global.blessedTiles[Math.floor(dx/48) + Math.floor(dy/48) * 17];
+        var tile = this.blessedTiles[Math.floor(dx/48)][Math.floor(dy/48)];
         if (tile) {
             var char = {
                 11: '{green-fg}.{/green-fg}',
                 26: '{white-fg}＃{/white-fg}',
                 27: '{white-fg}＃{/white-fg}',
-                6 : '{white-fg}.{/white-fg}'
+                6 : '{white-fg}.{/white-fg}',
+                8 : '{blue-fg}～{/blue-fg}',
+                0 : '{yellow-fg}＞{/yellow-fg}'
             }[Math.floor(tileId / 256)];
+            !char && console.log(Math.floor(tileId / 256))
             tile.setContent(char);
-            // tile.setStyle(char.style);
         }
         // if (Tilemap.isAutotile(tileId)) {
         //     this._drawAutotile(bitmap, tileId, dx, dy);

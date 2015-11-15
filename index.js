@@ -24,47 +24,15 @@ jsdom.env(
       fullUnicode: true
     });
 
-    var map = blessed.box({
-      width: 34,
-      height: 13,
-      top: 'center',
-      left: 'center'
-    });
-
-    var tiles = [];
-    for (var x = 0; x < 17; x++) {
-      for (var y = 0; y < 13; y++) {
-        // Create a box perfectly centered horizontally and vertically.
-        var text = blessed.text({
-          top: y,
-          left: x*2,
-          width: 2,
-          height: 1,
-          content: '　',
-          tags: true,
-          style: {
-            fg: 'white'
-          }
-        });
-        tiles[x + y * 17] = text;
-
-        // Append our box to the screen.
-        map.append(text);
-      }
-    }
-
-    screen.append(map);
-
     // Quit on Escape, q, or Control-C.
     screen.key(['C-c'], function(ch, key) {
         return process.exit(0);
     });
-
     // Render the screen.
     screen.render();
     // TODO ひとまずグローバルにおいて動く状態にする。余裕があればPIXIと入れ替える形でうまく動くようにしたい
+    global.blessed = blessed;
     global.blessedScreen = screen;
-    global.blessedTiles = tiles;
 
 
     var createElementOriginal = document.createElement;
